@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Dice3DThree from './Dice3DThree'
 import './App.css'
 import { boardRooms, boardSize } from './boardData'
 
@@ -45,6 +46,19 @@ function App() {
   const [players, setPlayers] = useState(defaultPlayers)
   const [cards, setCards] = useState<{ [key: string]: string[] }>({})
   const [dice, setDice] = useState<number>(1)
+  const [rolling, setRolling] = useState(false)
+  const [pendingDice, setPendingDice] = useState<number | null>(null)
+  const [showDice, setShowDice] = useState(false)
+
+  // Callback for dice animation end
+  const handleDiceAnimationEnd = () => {
+    if (pendingDice !== null) {
+      setDice(pendingDice)
+      setPendingDice(null)
+      setRolling(false)
+      setShowDice(false) // Hide the dice after display period
+    }
+  }
 
   // Move player to a room
   const movePlayer = (idx: number, newPos: number) => {
@@ -63,9 +77,13 @@ function App() {
     })
   }
 
-  // Roll dice
+  // Roll dice: generate random value, start rolling animation
   const rollDice = () => {
-    setDice(Math.floor(Math.random() * 6) + 1)
+    if (rolling) return
+    const newValue = Math.floor(Math.random() * 6) + 1
+    setPendingDice(newValue)
+    setRolling(true)
+    setShowDice(true)
   }
 
   // Card visibility state per player
@@ -261,8 +279,24 @@ function App() {
       </section>
       <section className='dice'>
         <h2>Dice</h2>
-        <div style={{ fontSize: '2rem' }}>🎲 {dice}</div>
-        <button onClick={rollDice}>Roll Dice</button>
+        <div style={{ fontSize: '2rem' }}>
+          {rolling ? (
+            <span style={{ opacity: 0.5 }}>🎲 Rolling...</span>
+          ) : (
+            <>🎲 {dice}</>
+          )}
+        </div>
+        <button onClick={rollDice} disabled={rolling}>
+          Roll Dice
+        </button>
+        {/* Show 3D dice when rolling starts and keep it visible */}
+        {showDice && (
+          <Dice3DThree
+            value={pendingDice ?? dice}
+            rolling={rolling}
+            onAnimationEnd={handleDiceAnimationEnd}
+          />
+        )}
       </section>
     </>
   )

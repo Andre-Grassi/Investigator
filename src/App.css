@@ -38,9 +38,10 @@
   max-width: 900px;
   margin: 2rem auto;
   padding: 2rem;
-  background: #f8f8f8;
+  background: #181818;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  color: #f1f1f1;
 }
 
 .board ul {
@@ -50,10 +51,12 @@
 .board li {
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
-}
-.board button {
-  margin-left: 0.5rem;
-  padding: 0.2rem 0.6rem;
+  border: 1px solid #444;
+  box-sizing: border-box;
+  position: relative;
+  padding: 8px 4px 24px 4px;
+  color: #f1f1f1;
+  font-family: inherit;
 }
 
 .cards {
@@ -62,24 +65,38 @@
 .cards select {
   margin-top: 0.5rem;
   padding: 0.2rem 0.6rem;
-}
-.cards ul {
-  margin: 0.5rem 0 0 0;
-  padding: 0;
-  list-style: none;
-}
-.cards li {
-  font-size: 0.95rem;
-}
+  .cards {
+    margin-top: 2rem;
+  }
+  .cards select {
+    margin-top: 0.5rem;
+    padding: 0.2rem 0.6rem;
+    background: #222;
+    color: #f1f1f1;
+    border: 1px solid #444;
+  }
+  .cards ul {
+    margin: 0.5rem 0 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cards li {
+    font-size: 0.95rem;
+    color: #f1f1f1;
+  }
 
-.dice {
-  margin-top: 2rem;
-}
-.dice button {
-  margin-top: 0.5rem;
-  padding: 0.4rem 1.2rem;
-  font-size: 1rem;
-}
+  .dice {
+    margin-top: 2rem;
+  }
+  .dice button {
+    margin-top: 0.5rem;
+    padding: 0.4rem 1.2rem;
+    font-size: 1rem;
+    background: #222;
+    color: #f1f1f1;
+    border: 1px solid #444;
+    border-radius: 6px;
+  }
 }
 
 .card {

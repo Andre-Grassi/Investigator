@@ -68,6 +68,39 @@ function App() {
     setDice(Math.floor(Math.random() * 6) + 1)
   }
 
+  // Card visibility state per player
+  const [visibleCards, setVisibleCards] = useState<{ [key: string]: boolean }>(
+    {}
+  )
+
+  const toggleCards = (playerName: string) => {
+    setVisibleCards(v => ({ ...v, [playerName]: !v[playerName] }))
+  }
+  // State for selected players to shuffle cards
+  const [shufflePlayers, setShufflePlayers] = useState<string[]>([])
+
+  // Shuffle cards among selected players
+  const shuffleCardsBetweenPlayers = () => {
+    // Shuffle all game cards between selected players
+    if (shufflePlayers.length < 2) {
+      alert('Selecione dois jogadores para embaralhar todas as cartas do jogo.')
+      return
+    }
+    const shuffled = shuffle([...allCards])
+    const newCards: { [key: string]: string[] } = { ...cards }
+    // Clear cards for selected players
+    shufflePlayers.forEach(name => {
+      newCards[name] = []
+    })
+    // Distribute all cards evenly
+    shuffled.forEach((card, i) => {
+      const playerIdx = i % shufflePlayers.length
+      const playerName = shufflePlayers[playerIdx]
+      newCards[playerName].push(card)
+    })
+    setCards(newCards)
+  }
+
   // Cleaned up: Only one shuffle function and one App component, with valid JSX
   return (
     <>
@@ -145,15 +178,70 @@ function App() {
       </div>
       <section className='cards'>
         <h2>Cartas dos Jogadores</h2>
+        <div style={{ marginBottom: '1rem' }}>
+          <div>Selecione dois jogadores para embaralhar cartas:</div>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: 8 }}>
+            {players.map(p => (
+              <label
+                key={p.name}
+                style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+              >
+                <input
+                  type='checkbox'
+                  checked={shufflePlayers.includes(p.name)}
+                  onChange={e => {
+                    if (e.target.checked) {
+                      if (shufflePlayers.length < 2) {
+                        setShufflePlayers([...shufflePlayers, p.name])
+                      }
+                    } else {
+                      setShufflePlayers(
+                        shufflePlayers.filter(n => n !== p.name)
+                      )
+                    }
+                  }}
+                  disabled={
+                    !shufflePlayers.includes(p.name) &&
+                    shufflePlayers.length >= 2
+                  }
+                />
+                {p.name}
+              </label>
+            ))}
+          </div>
+          <button
+            onClick={shuffleCardsBetweenPlayers}
+            disabled={shufflePlayers.length !== 2}
+            style={{ marginLeft: 12, marginTop: 8 }}
+          >
+            Embaralhar cartas entre selecionados
+          </button>
+        </div>
         <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
           {players.map(p => (
-            <div key={p.name}>
+            <div key={p.name} style={{ minWidth: 180 }}>
               <strong>{p.name}</strong>
-              <ul>
-                {(cards[p.name] || []).map(card => (
-                  <li key={card}>{card}</li>
-                ))}
-              </ul>
+              <button
+                style={{
+                  marginLeft: 8,
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+                onClick={() => toggleCards(p.name)}
+                title={
+                  visibleCards[p.name] ? 'Esconder cartas' : 'Mostrar cartas'
+                }
+              >
+                {visibleCards[p.name] ? '👁️' : '👁'}
+              </button>
+              {visibleCards[p.name] && (
+                <ul>
+                  {(cards[p.name] || []).map(card => (
+                    <li key={card}>{card}</li>
+                  ))}
+                </ul>
+              )}
               <select
                 onChange={e => giveCard(p.name, e.target.value)}
                 defaultValue=''

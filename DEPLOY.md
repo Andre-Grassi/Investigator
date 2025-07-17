@@ -17,7 +17,19 @@ O projeto foi configurado para GitHub Pages com:
 
 3. **GitHub Actions** configurado em `.github/workflows/deploy.yml`:
    - Deploy automático no push para main
-   - Build e deploy usando Node.js 18
+   - Build e deploy usando Node.js 20 (compatível com Vite 7)
+   - Instalação robusta de dependências
+
+## 🔧 Problemas Resolvidos
+
+### ❌ Problemas Anteriores:
+- **EBADENGINE**: Vite 7 requer Node.js >=20, mas GitHub Actions usava Node 18
+- **package-lock.json**: Arquivo não sincronizado com package.json
+
+### ✅ Soluções Aplicadas:
+- Atualizado GitHub Actions para Node.js 20
+- Regenerado package-lock.json sincronizado
+- Configurado instalação robusta de dependências no workflow
 
 ## 🔧 Próximos Passos
 
@@ -25,7 +37,7 @@ O projeto foi configurado para GitHub Pages com:
 
 ```bash
 git add .
-git commit -m "Configure GitHub Pages deployment"
+git commit -m "Fix GitHub Pages deployment - Node 20 + regenerated lock file"
 git push origin main
 ```
 
@@ -63,5 +75,7 @@ https://[seu-usuario].github.io/Investigator/
 
 - ✅ Build realizado com sucesso
 - ✅ Preview funcionando em http://localhost:4173/Investigator/
-- ✅ Configurações de GitHub Pages prontas
+- ✅ Configurações de GitHub Pages corrigidas
+- ✅ Node.js 20 configurado no GitHub Actions
+- ✅ package-lock.json regenerado e sincronizado
 - ⏳ Aguardando commit e push para GitHub

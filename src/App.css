@@ -26,7 +26,11 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--bg-primary) 0%,
+    var(--bg-secondary) 100%
+  );
   background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.6;
@@ -40,9 +44,16 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(212, 175, 55, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(212, 175, 55, 0.03) 0%,
+      transparent 50%
+    );
   pointer-events: none;
   z-index: 0;
 }
@@ -57,7 +68,9 @@ body::before {
 }
 
 /* Typography */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 1.5rem;
@@ -98,9 +111,7 @@ h3 {
   background: var(--border);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 
-    0 4px 24px var(--shadow),
-    0 0 0 1px var(--border);
+  box-shadow: 0 4px 24px var(--shadow), 0 0 0 1px var(--border);
 }
 
 .board-row {
@@ -139,7 +150,7 @@ h3 {
 }
 
 /* Player Movement Section */
-div[style*="marginTop"] {
+div[style*='marginTop'] {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -148,7 +159,7 @@ div[style*="marginTop"] {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-div[style*="marginTop"] > div {
+div[style*='marginTop'] > div {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -157,7 +168,7 @@ div[style*="marginTop"] > div {
   border-bottom: 1px solid var(--border-subtle);
 }
 
-div[style*="marginTop"] > div:last-child {
+div[style*='marginTop'] > div:last-child {
   border-bottom: none;
   margin-bottom: 0;
 }
@@ -214,7 +225,7 @@ select:focus {
   color: var(--text-primary);
 }
 
-.cards input[type="checkbox"] {
+.cards input[type='checkbox'] {
   width: 16px;
   height: 16px;
   border: 1.5px solid var(--border);
@@ -225,12 +236,12 @@ select:focus {
   appearance: none;
 }
 
-.cards input[type="checkbox"]:checked {
+.cards input[type='checkbox']:checked {
   background: var(--accent);
   border-color: var(--accent);
 }
 
-.cards input[type="checkbox"]:checked::after {
+.cards input[type='checkbox']:checked::after {
   content: '✓';
   display: block;
   color: var(--bg-primary);
@@ -318,7 +329,7 @@ button:active:not(:disabled) {
 }
 
 /* Eye buttons for card visibility */
-button[style*="background: none"] {
+button[style*='background: none'] {
   background: none !important;
   border: none !important;
   padding: 0.25rem !important;
@@ -328,7 +339,7 @@ button[style*="background: none"] {
   transition: all 0.2s ease;
 }
 
-button[style*="background: none"]:hover {
+button[style*='background: none']:hover {
   opacity: 1;
   transform: scale(1.1);
   filter: drop-shadow(0 0 4px var(--accent));
@@ -345,7 +356,7 @@ button[style*="background: none"]:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-.dice div[style*="fontSize"] {
+.dice div[style*='fontSize'] {
   font-family: 'JetBrains Mono', monospace !important;
   font-size: 2.5rem !important;
   font-weight: 600;
@@ -361,15 +372,20 @@ button[style*="background: none"]:hover {
 }
 
 /* Player dots styling */
-span[style*="fontWeight: bold"] {
+span[style*='fontWeight: bold'] {
   font-size: 1.25rem !important;
   filter: drop-shadow(0 0 2px currentColor);
   animation: playerPulse 3s ease-in-out infinite;
 }
 
 @keyframes playerPulse {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* Responsive Design */
@@ -377,18 +393,18 @@ span[style*="fontWeight: bold"] {
   #root {
     padding: 1rem;
   }
-  
+
   .board-cell {
     min-width: 80px;
     min-height: 80px;
     padding: 8px 4px 20px 4px;
   }
-  
+
   .cards > div:last-child {
     grid-template-columns: 1fr;
   }
-  
-  div[style*="marginTop"] > div {
+
+  div[style*='marginTop'] > div {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;

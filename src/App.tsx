@@ -18,7 +18,7 @@ const defaultPlayers = [
   { name: 'Rosa', color: 'pink', position: 5 },
 ]
 
-const allCards = [
+const placesCards = [
   'Banco',
   'Boate',
   'Cemitério',
@@ -30,6 +30,9 @@ const allCards = [
   'Prefeitura',
   'Restaurante',
   'Estação de Trem',
+]
+
+const weaponsCards = [
   'Pé de Cabra',
   'Espingarda',
   'Faca',
@@ -38,6 +41,9 @@ const allCards = [
   'Soco Inglês',
   'Tesoura',
   'Veneno',
+]
+
+const peopleCards = [
   'Sargento Bigode',
   'Florista Dona Branca',
   'Mordomo James',
@@ -48,6 +54,8 @@ const allCards = [
   'Médica Dona Violeta',
 ]
 
+let allCards = [...placesCards, ...weaponsCards, ...peopleCards]
+
 function App() {
   const [players, setPlayers] = useState(defaultPlayers)
   const [cards, setCards] = useState<{ [key: string]: string[] }>({})
@@ -55,6 +63,41 @@ function App() {
   const [rolling, setRolling] = useState(false)
   const [pendingDice, setPendingDice] = useState<number | null>(null)
   const [showDice, setShowDice] = useState(false)
+  const [secretEnvelope, setSecretEnvelope] = useState<{
+    person: string | null
+    weapon: string | null
+    place: string | null
+  }>({ person: null, weapon: null, place: null })
+  const [availableCards, setAvailableCards] = useState([...allCards])
+  const [showEnvelope, setShowEnvelope] = useState(false)
+
+  // Generate secret envelope with one card from each type
+  const generateSecretEnvelope = () => {
+    const randomPerson =
+      peopleCards[Math.floor(Math.random() * peopleCards.length)]
+    const randomWeapon =
+      weaponsCards[Math.floor(Math.random() * weaponsCards.length)]
+    const randomPlace =
+      placesCards[Math.floor(Math.random() * placesCards.length)]
+
+    const envelope = {
+      person: randomPerson,
+      weapon: randomWeapon,
+      place: randomPlace,
+    }
+
+    setSecretEnvelope(envelope)
+
+    // Remove envelope cards from available cards
+    const newAvailableCards = allCards.filter(
+      card =>
+        card !== randomPerson && card !== randomWeapon && card !== randomPlace
+    )
+    setAvailableCards(newAvailableCards)
+
+    // Clear all player cards since envelope has changed
+    setCards({})
+  }
 
   // Callback for dice animation end
   const handleDiceAnimationEnd = () => {
@@ -105,18 +148,20 @@ function App() {
 
   // Shuffle cards among selected players
   const shuffleCardsBetweenPlayers = () => {
-    // Shuffle all game cards between selected players
-    if (shufflePlayers.length < 2) {
-      alert('Selecione dois jogadores para embaralhar todas as cartas do jogo.')
+    // Shuffle available cards between selected players (excluding envelope cards)
+    if (shufflePlayers.length < 1) {
+      alert(
+        'Selecione pelo menos um jogador para distribuir as cartas do jogo.'
+      )
       return
     }
-    const shuffled = shuffle([...allCards])
+    const shuffled = shuffle([...availableCards])
     const newCards: { [key: string]: string[] } = { ...cards }
     // Clear cards for selected players
     shufflePlayers.forEach(name => {
       newCards[name] = []
     })
-    // Distribute all cards evenly
+    // Distribute all available cards evenly
     shuffled.forEach((card, i) => {
       const playerIdx = i % shufflePlayers.length
       const playerName = shufflePlayers[playerIdx]
@@ -125,7 +170,6 @@ function App() {
     setCards(newCards)
   }
 
-  // Cleaned up: Only one shuffle function and one App component, with valid JSX
   return (
     <>
       <h2>Game Board</h2>
@@ -181,6 +225,65 @@ function App() {
           </div>
         ))}
       </div>
+
+      <section className='cards'>
+        <h2>Envelope Super Secreto</h2>
+        <div
+          style={{
+            marginBottom: '2rem',
+            padding: '1rem',
+            background: 'var(--surface)',
+            borderRadius: '8px',
+            border: '1px solid var(--border)',
+          }}
+        >
+          <div style={{ marginBottom: '1rem' }}>
+            <button
+              onClick={generateSecretEnvelope}
+              style={{ marginRight: '1rem' }}
+            >
+              Gerar Envelope Secreto
+            </button>
+            <button
+              onClick={() => setShowEnvelope(!showEnvelope)}
+              disabled={!secretEnvelope.person}
+            >
+              {showEnvelope ? 'Esconder' : 'Revelar'} Envelope
+            </button>
+          </div>
+
+          {secretEnvelope.person && (
+            <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+              Envelope gerado! {availableCards.length} cartas disponíveis para
+              distribuição.
+            </div>
+          )}
+
+          {showEnvelope && secretEnvelope.person && (
+            <div
+              style={{
+                marginTop: '1rem',
+                padding: '1rem',
+                background: 'var(--bg-tertiary)',
+                borderRadius: '6px',
+              }}
+            >
+              <h4 style={{ color: 'var(--accent)', marginBottom: '0.5rem' }}>
+                🎯 Solução do Crime:
+              </h4>
+              <div>
+                <strong>Culpado:</strong> {secretEnvelope.person}
+              </div>
+              <div>
+                <strong>Arma:</strong> {secretEnvelope.weapon}
+              </div>
+              <div>
+                <strong>Local:</strong> {secretEnvelope.place}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
       <div style={{ marginTop: '1rem' }}>
         <h3>Move Players</h3>
         {players.map((p, idx) => (
@@ -203,7 +306,7 @@ function App() {
       <section className='cards'>
         <h2>Cartas dos Jogadores</h2>
         <div style={{ marginBottom: '1rem' }}>
-          <div>Selecione dois jogadores para embaralhar cartas:</div>
+          <div>Selecione jogadores para distribuir cartas:</div>
           <div style={{ display: 'flex', gap: '1rem', marginTop: 8 }}>
             {players.map(p => (
               <label
@@ -215,19 +318,13 @@ function App() {
                   checked={shufflePlayers.includes(p.name)}
                   onChange={e => {
                     if (e.target.checked) {
-                      if (shufflePlayers.length < 2) {
-                        setShufflePlayers([...shufflePlayers, p.name])
-                      }
+                      setShufflePlayers([...shufflePlayers, p.name])
                     } else {
                       setShufflePlayers(
                         shufflePlayers.filter(n => n !== p.name)
                       )
                     }
                   }}
-                  disabled={
-                    !shufflePlayers.includes(p.name) &&
-                    shufflePlayers.length >= 2
-                  }
                 />
                 {p.name}
               </label>
@@ -235,10 +332,11 @@ function App() {
           </div>
           <button
             onClick={shuffleCardsBetweenPlayers}
-            disabled={shufflePlayers.length !== 2}
+            disabled={shufflePlayers.length < 1}
             style={{ marginLeft: 12, marginTop: 8 }}
           >
-            Embaralhar cartas entre selecionados
+            Distribuir cartas entre selecionados ({shufflePlayers.length}{' '}
+            jogador{shufflePlayers.length !== 1 ? 'es' : ''})
           </button>
         </div>
         <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
@@ -273,7 +371,7 @@ function App() {
                 <option value='' disabled>
                   Dar carta manualmente...
                 </option>
-                {[...allCards].map(card => (
+                {availableCards.map(card => (
                   <option key={card} value={card}>
                     {card}
                   </option>

@@ -23,10 +23,12 @@ O projeto foi configurado para GitHub Pages com:
 ## 🔧 Problemas Resolvidos
 
 ### ❌ Problemas Anteriores:
+
 - **EBADENGINE**: Vite 7 requer Node.js >=20, mas GitHub Actions usava Node 18
 - **package-lock.json**: Arquivo não sincronizado com package.json
 
 ### ✅ Soluções Aplicadas:
+
 - Atualizado GitHub Actions para Node.js 20
 - Regenerado package-lock.json sincronizado
 - Configurado instalação robusta de dependências no workflow
